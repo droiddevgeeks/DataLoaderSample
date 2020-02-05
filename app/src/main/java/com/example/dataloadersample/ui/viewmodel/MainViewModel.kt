@@ -3,7 +3,6 @@ package com.example.dataloadersample.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.example.contentloader.ContentDownloader
 import com.example.contentloader.callback.IDownloadStatus
 import com.example.dataloadersample.api.PinBoard
@@ -11,7 +10,6 @@ import com.example.dataloadersample.base.core.BaseViewModel
 import com.google.gson.Gson
 import javax.inject.Inject
 import com.google.gson.reflect.TypeToken
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 

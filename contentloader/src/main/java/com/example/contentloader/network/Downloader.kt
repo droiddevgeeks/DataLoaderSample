@@ -1,7 +1,5 @@
 package com.example.contentloader.network
 
-
-import android.util.Log
 import com.example.contentloader.di.component.DaggerContentComponent
 import okhttp3.Call
 import okhttp3.Request
@@ -34,7 +32,6 @@ abstract class Downloader : HttpCallback {
      * While using this data, we have to switch to main thread
      */
     override fun onResponse(result: ByteArray?, error: Throwable?) {
-        Log.v("Task Response on", Thread.currentThread().name)
         networkResponse(result, error)
     }
 

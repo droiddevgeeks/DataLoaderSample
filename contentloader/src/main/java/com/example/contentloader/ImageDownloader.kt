@@ -2,10 +2,10 @@ package com.example.contentloader
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import com.example.contentloader.cache.MemoryCache
 import com.example.contentloader.network.Downloader
 import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
@@ -23,8 +23,12 @@ class ImageDownloader<T : View> private constructor(
         get() = Dispatchers.Main + Job()
 
     fun fetchImage() {
-        Log.v("Task Image on", Thread.currentThread().name)
-        startDownload(url)
+        val byteArray = MemoryCache.getData(url)
+
+        if (byteArray != null)
+            networkResponse(result = byteArray, error = null)
+        else
+            startDownload(url)
     }
 
     /**
@@ -34,6 +38,7 @@ class ImageDownloader<T : View> private constructor(
         launch {
             val view: View = imageView.get() as View
             result?.let {
+                MemoryCache.putData(url,result)
                 try {
                     if (view is ImageView) {
                         val bitmap = Bitmap.createScaledBitmap(

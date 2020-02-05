@@ -1,6 +1,5 @@
 package com.example.contentloader
 
-import android.util.Log
 import com.example.contentloader.callback.IDownloadStatus
 import com.example.contentloader.network.Downloader
 import java.nio.charset.Charset
@@ -13,7 +12,6 @@ class ContentDownloader @Inject constructor() : Downloader() {
     private lateinit var url: String
 
     fun fetchContent() {
-        Log.v("Task Content on", Thread.currentThread().name)
         require(url.isNotEmpty()) { "Url should not be empty." }
         startDownload(url)
     }

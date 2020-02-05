@@ -11,5 +11,5 @@ import javax.inject.Singleton
 interface ContentComponent {
 
     fun getHttpOperation(): HttpOperation
-    fun getOkHttpclient() : OkHttpClient
+    fun getOkHttpclient(): OkHttpClient
 }
