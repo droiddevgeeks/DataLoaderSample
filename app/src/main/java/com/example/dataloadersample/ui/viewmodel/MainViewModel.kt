@@ -13,10 +13,11 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 
 
-class MainViewModel @Inject constructor() : BaseViewModel(){
+class MainViewModel @Inject constructor(
+    private var contentDownloader: ContentDownloader
+) :
+    BaseViewModel() {
 
-    @Inject
-    lateinit var contentDownloader: ContentDownloader
 
     private val _pinBoardLiveData by lazy { MutableLiveData<List<PinBoard>>() }
     val pinBoardLiveData: LiveData<List<PinBoard>> by lazy { _pinBoardLiveData }
@@ -32,7 +33,7 @@ class MainViewModel @Inject constructor() : BaseViewModel(){
      */
     fun fetchJsonData(url: String) {
         _loadingState.postValue(true)
-        launch{
+        launch {
             contentDownloader
                 .setUrl(url)
                 .setCallBack(callback = object : IDownloadStatus<String> {

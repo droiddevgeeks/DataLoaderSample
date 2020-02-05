@@ -49,11 +49,18 @@ class MainActivity : BaseActivity<MainViewModel>() {
         viewModel.loadingState.observe(this, Observer { loadingStatus(it) })
     }
 
-    private fun setImageList(imageList: List<PinBoard>) {
-        pinItems.addAll(imageList)
-        pinItems.addAll(imageList)
-        pinItems.addAll(imageList)
-        pinItems.addAll(imageList)
+    /**
+     * added data to same list, just for testing purpose
+     */
+    private fun setImageList(pinBoardList: List<PinBoard>) {
+        pinItems.addAll(pinBoardList)
+        pinItems.addAll(pinBoardList)
+        pinItems.addAll(pinBoardList)
+        pinItems.addAll(pinBoardList)
+        pinItems.addAll(pinBoardList)
+        pinItems.addAll(pinBoardList)
+        pinItems.addAll(pinBoardList)
+        pinItems.addAll(pinBoardList)
         pinAdapter.notifyDataSetChanged()
     }
 

@@ -11,9 +11,9 @@ import kotlinx.coroutines.*
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
 
-class ImageDownloader<T : View> private constructor(
+class ImageDownloader private constructor(
     private val url: String,
-    private val imageView: WeakReference<T>,
+    private val imageView: WeakReference<ImageView>,
     private val errorPlaceholder: Int,
     private val width: Int,
     private val height: Int
@@ -36,41 +36,36 @@ class ImageDownloader<T : View> private constructor(
      */
     override fun networkResponse(result: ByteArray?, error: Throwable?) {
         launch {
-            val view: View = imageView.get() as View
-            result?.let {
-                MemoryCache.putData(url,result)
-                try {
-                    if (view is ImageView) {
-                        val bitmap = Bitmap.createScaledBitmap(
-                            BitmapFactory.decodeByteArray(
-                                result,
-                                0,
-                                result.size
-                            ), width, height, false
-                        )
-                        if (bitmap != null) {
-                            view.setImageBitmap(bitmap)
-                        } else {
-                            setImage(view, errorPlaceholder)
-                        }
+            imageView.get()?.let { imageView ->
+                result?.let {
+                    MemoryCache.putData(url, it)
+                    try {
+                        val imageBitmap = getImageBitmapAsync(it).await()
+                        imageView.setImageBitmap(imageBitmap)
+                    } catch (e: OutOfMemoryError) {
+                        imageView.setImageResource(errorPlaceholder)
                     }
-                } catch (e: OutOfMemoryError) {
-                    setImage(view, errorPlaceholder)
                 }
+                error?.let { imageView.setImageResource(errorPlaceholder) }
             }
-            error?.let { setImage(view, errorPlaceholder) }
         }
     }
 
-    private fun setImage(view: View, resourceId: Int) {
-        if (view is ImageView) {
-            view.setImageResource(resourceId)
+    private fun getImageBitmapAsync(result: ByteArray): Deferred<Bitmap> =
+        async(Dispatchers.IO) {
+            Bitmap.createScaledBitmap(
+                BitmapFactory.decodeByteArray(
+                    result,
+                    0,
+                    result.size
+                ), width, height, false
+            )
         }
-    }
 
-    class Builder<T : View> {
 
-        private lateinit var imageView: WeakReference<T>
+    class Builder<T : ImageView> {
+
+        private lateinit var imageView: WeakReference<ImageView>
         private var url: String = ""
         private var width: Int = 200
         private var height: Int = 200
@@ -98,7 +93,7 @@ class ImageDownloader<T : View> private constructor(
             return this
         }
 
-        fun build(): ImageDownloader<T> {
+        fun build(): ImageDownloader {
             require(url.isNotEmpty()) { "Url should not be empty." }
             require(this::imageView.isInitialized) { "View should not be empty." }
             return ImageDownloader(

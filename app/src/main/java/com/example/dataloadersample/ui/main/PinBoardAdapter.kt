@@ -33,7 +33,7 @@ class PinBoardAdapter(private val context: Context, private val items: List<PinB
             with(view) {
                 ImageDownloader
                     .Builder<ImageView>()
-                    .load(pinBoard.user.profile_image.large)
+                    .load(pinBoard.urls.regular)
                     .into(pinItem)
                     .scale(200,200)
                     .build()
